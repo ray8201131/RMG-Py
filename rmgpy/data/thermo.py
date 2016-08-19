@@ -1384,6 +1384,7 @@ class ThermoDatabase(object):
         
         comment = comment.replace(' + ',' +')
         comment = comment.replace(' - ', ' -')
+        tokens = comment.split()
         
         groups = {}
         groupTypes = self.groups.keys()
