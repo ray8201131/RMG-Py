@@ -1378,7 +1378,6 @@ class ThermoDatabase(object):
         
         
         # Check for group additivity contributions to the thermo in this species            
-        # These groupTypes are hardcoded and must be updated if new types are added
         
         # The contribution of the groups can be either additive or substracting
         # after changes to the polycyclic algorithm
@@ -1387,7 +1386,8 @@ class ThermoDatabase(object):
         comment = comment.replace(' - ', ' -')
         
         groups = {}
-        groupTypes = ['group','gauche','int15','other','ring','polycyclic', 'radical']
+        groupTypes = self.groups.keys()
+        
         
         regex = "\((.*)\)" #only hit outermost parentheses
         for token in tokens:
