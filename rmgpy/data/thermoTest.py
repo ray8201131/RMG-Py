@@ -214,7 +214,18 @@ class TestThermoDatabase(unittest.TestCase):
         
         # Function should complain if there's no thermo comments
         self.assertRaises(self.database.extractSourceFromComments(cineole_rad)) 
-    
+        
+        
+        # Check a dummy species that has plus and minus thermo group contributions
+        polycyclic = Species(index=7, label="dummy", thermo=NASA(polynomials=[NASAPolynomial(coeffs=[-0.2897,0.0627717,8.63299e-05,-1.47868e-07,5.81665e-11,-14017.6,31.0266], Tmin=(100,'K'), Tmax=(988.76,'K')),
+         NASAPolynomial(coeffs=[20.4836,0.0562555,-2.13903e-05,4.05725e-09,-2.96023e-13,-21915,-88.1205], Tmin=(988.76,'K'), Tmax=(5000,'K'))],
+         Tmin=(100,'K'), Tmax=(5000,'K'),  comment="""Thermo group additivity estimation: group(Cs-CsCsHH) + group(Cs-CsCsHH) - ring(Benzene)"""), molecule=[Molecule(SMILES="[CH2]C12CCC(CC1)C(C)(C)O2")])
+   
+        source = self.database.extractSourceFromComments(polycyclic)
+        self.assertTrue('GAV' in source)
+        self.assertEqual(source['GAV']['ring'][0][1],-1)  # the weight of benzene contribution should be -1
+        self.assertEqual(source['GAV']['group'][0][1],2)  # weight of the group(Cs-CsCsHH) conbtribution should be 2
+        
 class TestThermoDatabaseAromatics(TestThermoDatabase):
     """
     Test only Aromatic species.
